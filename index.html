@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <base target="_top">
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+    <!-- Bootstrap -->
+    <link href="http://jschr.github.io/bootstrap-modal/css/bootstrap-modal-bs3patch.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <style>
+        .form-group {
+            margin-bottom: 9px;
+        }
+        
+        fieldset {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+        
+        .info {
+            margin-bottom: 5px;
+        }
+        
+        span {
+            font-weight: bold;
+        }
+
+    </style>
+
+    <script>
+        // Prevent forms from submitting.
+        function preventFormSubmit() {
+            var forms = document.querySelectorAll('form');
+            for (var i = 0; i < forms.length; i++) {
+                forms[i].addEventListener('submit', function(event) {
+                    event.preventDefault();
+                });
+            }
+        }
+        window.addEventListener('load', preventFormSubmit);
+
+        function handleFormSubmit(formObject) {
+            $("#submitBtn").val("Submitting...");
+
+            console.log("running script");
+            google.script.run
+                .withSuccessHandler(onSuccess)
+                .withFailureHandler(onFailure)
+                .submitForm(formObject);
+        }
+
+        $(function() {
+
+            // get the iso time string formatted for usage in an input['type="datetime-local"']
+            var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+            var localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -1);
+            var localISOTimeWithoutSeconds = localISOTime.slice(0, 16);
+
+            // set it and forget it ;)
+            $("#date").val(localISOTime.slice(0, 16));
+
+            $("#addButton").click(function() {
+                $("#main").hide();
+            });
+
+            $("#submitBtn").click(function() {
+                $("#main").show();
+            })
+        });
+
+        function closeForm() {
+            console.log("closeForm");
+            google.script.host.close()
+        };
+
+        function onFailure(error) {
+            alert(error.message);
+            $("#submitBtn").val("Submit");
+        };
+
+        function onSuccess() {
+            $("#submitBtn").val("Submit");
+        };
+
+    </script>
+
+</head>
+
+<body>
+    <div class="page-header">
+        <div class="container">
+            <h2>Baby Data Log <small><a href="https://docs.google.com/spreadsheets/d/122YTc-QCFol8y3pq0w9vw6qqREFxTPJKD1oR03dAUh4/edit#gid=0" target="_blank">View Log</a></small></h2>
+        </div>
+    </div>
+
+    <div class="container wrap">
+        <!--
+        <div>
+            <h4>
+                <span id="lastAteInfo">Last ate 80 mL NeoSure 3 hours ago</span>
+            </h4>
+        </div>
+-->
+
+        <div id="main">
+            <div class="panel panel-primary">
+                <div class="panel-body">
+                    <div class="info">
+                        <span style="font-size: 20px">🍼</span> Last ate <span id="lastAte-type">Breastmilk</span> at <span id="lastAte-time">12:00 PM</span> (<span id="lastAte-duration">5 hours ago</span>)
+                    </div>
+
+                    <div class="info">
+                        <img src="https://png.icons8.com/nappy/ios7/25" title="Nappy" width="25" height="25"> Last diaper change was at <span id="lastDiaperChange-date">12:00 PM</span>
+                    </div>
+
+                    <div class="info">
+                        <span style="font-size: 20px">💩</span> Last poop was <span id="lastPoop-duration">12 hours ago</span>
+                    </div>
+                </div>
+            </div>
+
+            <button id="addButton" class="btn btn-primary btn-block" type="button" data-toggle="collapse" data-target="#formEntry" aria- expanded="false" aria-controls="collapseExample">
+                Add New Entry
+            </button>
+
+            <br>
+        </div>
+
+        <div class="collapse" id="formEntry">
+            <div class="">
+                <h4 class="">New Entry</h4>
+            </div>
+            <div class="">
+                <form id="myForm" onsubmit="handleFormSubmit(this)">
+                    <fieldset>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Date</div>
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <input class="form-control" style="width:100%" id="date" name="date" type="datetime-local" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Feeding</div>
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <label for="amount">Amount (mL):</label>
+                                    <input class="form-control" id="amount" name="amount" type="number" pattern="\d*" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="type">Type:</label>
+                                    <select class="form-control" id="type" name="type">
+                                    <option></option>
+                            <option>Breastmilk</option>
+                            <option>NeoSure</option>
+                        </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="vitamin">Vitamin:</label>
+                                    <select class="form-control" id="vitamin" name="vitamin">
+                                        <option>No</option>
+                                        <option>Yes</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Changing</div>
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <label for="wet">Wet:</label>
+                                    <!--
+                                    <div class="btn-group" data-toggle="buttons">
+                                        <label class="btn btn-default">
+                                <input type="radio" name="wet" id="wet-yes" value="Yes" autocomplete="off"> Yes
+                            </label>
+                                        <label class="btn btn-default active">
+                                <input type="radio" name="wet" id="wet-no" value="No" autocomplete="off" checked /> No
+                            </label>
+                                    </div>
+-->
+                                    <select class="form-control" id="wet" name="wet">
+                                        <option>No</option>
+                                        <option>Yes</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="dirty">Dirty:</label>
+                                    <select class="form-control" id="dirty" name="dirty">
+                                        <option>No</option>
+                                        <option>Smear</option>
+                                        <option>Small</option>
+                                        <option>Medium</option>
+                                        <option>Large</option>
+                                        <option>Blowout</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Weight</div>
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <input class="form-control" id="weight" name="weight" type="number" step="0.01" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Notes</div>
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <input class="form-control" id="notes" name="notes" type="text" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class=form-group style="margin-top:15px">
+                            <input class="btn btn-block btn-primary" id="submitBtn" type="submit" value="Submit" data-toggle="collapse" data-target="#formEntry" aria-expanded="false" aria-controls="collapseExample" />
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+    <!--
+    <div id="spreadsheet" class="container">
+        <iframe src="https://docs.google.com/spreadsheets/d/122YTc-QCFol8y3pq0w9vw6qqREFxTPJKD1oR03dAUh4/pubhtml?gid=0&amp;single=true&amp;widget=true&amp;headers=false" style="width: 100%; height: 500px"></iframe>
+    </div>
+-->
+
+
+</body>
+
+</html>
