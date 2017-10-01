@@ -1,0 +1,55 @@
+.form-group {
+    margin-bottom: 9px;
+}
+
+fieldset {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.info {
+    margin-bottom: 5px;
+}
+
+.label-icon {
+    font-size: 30px;
+    font-weight: bold;
+    padding-right: 5px;
+}
+
+.col-xs-1,
+.col-xs-2,
+.col-xs-3,
+.col-xs-4,
+.col-xs-5,
+.col-xs-6,
+.col-xs-7,
+.col-xs-8,
+.col-xs-9,
+.col-xs-10,
+.col-xs-11,
+.col-xs-12 {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.circle {
+    border-radius: 50%;
+}
+
+.bottom-right {
+    position: fixed;
+    right: 25px;
+    bottom: 25px;
+}
+
+.last-label {
+    padding-right: 5px;
+    padding-left: 5px;
+    margin-bottom: 0px;
+}
+
+.middle {
+    display: inline-block;
+    vertical-align: middle;
+}
