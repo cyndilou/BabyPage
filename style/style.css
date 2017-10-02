@@ -53,3 +53,14 @@ fieldset {
     display: inline-block;
     vertical-align: middle;
 }
+
+.bold {
+    font-weight: bold;
+}
+
+.icon {
+    font-size: 20px;
+    font-weight: bold;
+    padding-right: 5px;
+
+}
